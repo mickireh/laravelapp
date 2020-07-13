@@ -12,10 +12,15 @@
         <small>Written on {{$post->created_at}}</small>
         
     </div>
-    <a href="/posts/{{$post->id}}/edit" class="btn btn-primary mt-3">Edit</a>
+    
+    @if (!Auth::guest())
+        @if (Auth::user()->id == $post->user_id)
+            <a href="/posts/{{$post->id}}/edit" class="btn btn-primary mt-3">Edit</a>
+            {!!Form::open(['action' => ['PostsController@destroy', $post->id], 'method' => 'POST', 'class' => 'float-right mt-3']) !!}
+                {{Form::hidden('_method', 'DELETE')}}
+                {{Form::submit('Delete', ['class' => 'btn btn-danger'])}}
+            {!!Form::close()!!}
+        @endif
+    @endif
 
-    {!!Form::open(['action' => ['PostsController@destroy', $post->id], 'method' => 'POST', 'class' => 'float-right mt-3']) !!}
-        {{Form::hidden('_method', 'DELETE')}}
-        {{Form::submit('Delete', ['class' => 'btn btn-danger'])}}
-    {!!Form::close()!!}
 @endsection
